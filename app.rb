@@ -1,8 +1,7 @@
 require 'net/http'
 require 'json'
 require 'date'
-require 'i18n'
-require 'numbers_and_words'
+require 'time'
 
 class Weather
   KIEV_ID = 924938
@@ -23,16 +22,41 @@ class Weather
     high, low = today["high"], today["low"]
     text = today["text"]
     puts "code: #{today["code"]}"
-    puts [high, low]
-    result = "Сегодня #{day_of_week}, #{day_of_month}, в Киеве ожидается #{status_from_code(today['code'].to_i)}, температура воздуха от #{low} до #{high} градусов Цельсия."
-    say result
+    results = []
+    results << "#{hello}, хозяин."
+    results << "Киевское время #{Time.now.hour}:#{'%02d' % Time.now.min}."
+    results << "Сегодня #{day_of_week}, #{Date.today.day}-е #{month}, в Киеве ожидается. #{status_from_code(today['code'].to_i)}"
+    results << "температура воздуха от #{low} до #{high} градусов цельсия."
+    results << "Хорошего дня."
+    puts results
+    say(results)
   end
 
-  def say(text)
-    exec("wget -q -U Mozilla \"http://translate.google.com/translate_tts?ie=UTF-8&tl=ru&q=#{text}\" -O - | mplayer -cache 8192 -")
+  def say(texts)
+    # system("mplayer alarm.mp3 -af volume=1 &")
+    # system("mpc load morning.m3u")
+    # system("mpc play")
+
+    texts.each_with_index do |text, index|
+      system("wget -q -U Mozilla \"http://translate.google.com/translate_tts?ie=UTF-8&tl=ru&q=#{text}\" -O output#{index}.mp3")
+    end
+
+    texts.each_with_index do |_, index|
+      system("mplayer output#{index}.mp3 -af volume=8 > /dev/null")
+    end
   end
 
   private
+
+  def hello
+    if Time.now < Time.new(Time.now.year, Time.now.month, Time.now.day, 12, 00)
+      "Доброе утро"
+    elsif Time.now < Time.new(Time.now.year, Time.now.month, Time.now.day, 18, 00)
+      "Добрый день"
+    else
+      "Добрый вечер"
+    end
+  end
 
   def status_from_code(code)
     statuses = {
@@ -46,7 +70,9 @@ class Weather
       12 => "дождь",
       16 => "снег",
       26 => "облачная погода",
-      28 => "облачная погода с прояснениями"
+      28 => "облачная погода с прояснениями",
+      29 => "облачная погода с прояснениями",
+      30 => "облачная погода с прояснениями"
     }
     statuses[code]
   end
@@ -62,6 +88,24 @@ class Weather
       7 => "воскресенье"
     }
     days[Date.today.cwday]
+  end
+
+  def month
+    months = {
+      1 => "января",
+      2 => "февраля",
+      3 => "марта",
+      4 => "апреля",
+      5 => "мая",
+      6 => "июня",
+      7 => "июля",
+      8 => "августа",
+      9 => "сентября",
+      10 => "октября",
+      11 => "ноября",
+      12 => "декабря"
+    }
+    months[Date.today.month]
   end
 
   def day_of_month
