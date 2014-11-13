@@ -25,7 +25,11 @@ class Weather
     puts "code: #{today["code"]}"
     puts [high, low]
     result = "Сегодня #{day_of_week}, #{day_of_month}, в Киеве ожидается #{status_from_code(today['code'].to_i)}, температура воздуха от #{low} до #{high} градусов Цельсия."
-    puts result
+    say result
+  end
+
+  def say(text)
+    exec("wget -q -U Mozilla \"http://translate.google.com/translate_tts?ie=UTF-8&tl=ru&q=#{text}\" -O - | mplayer -cache 8192 -")
   end
 
   private
