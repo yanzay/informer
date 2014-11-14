@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'net/http'
 require 'json'
 require 'date'
@@ -23,7 +25,7 @@ class Weather
     text = today["text"]
     puts "code: #{today["code"]}"
     results = []
-    results << "#{hello}, хозяин."
+    results << "#{hello}, мой господин."
     results << "Киевское время #{Time.now.hour}:#{'%02d' % Time.now.min}."
     results << "Сегодня #{day_of_week}, #{Date.today.day}-е #{month}, в Киеве ожидается. #{status_from_code(today['code'].to_i)}"
     results << "температура воздуха от #{low} до #{high} градусов цельсия."
