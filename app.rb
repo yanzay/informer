@@ -13,7 +13,7 @@ class Weather
     query = "select * from weather.forecast where woeid=#{KIEV_ID} and u='c'"
     query << "&format=json"
     url = URI.encode(BASE_URL + query)
-    response = Net::HTTP.get(URI(url))
+    response = Net::HTTP.get(URI.parse(url))
     JSON.parse(response)
   end
 
