@@ -6,5 +6,5 @@ module Clockwork
     job.perform_async
   end
 
-  every(1.day, InformWorker), :at => '07:00')
+  every(1.day, InformWorker, :at => '07:00')
 end
