@@ -114,5 +114,3 @@ class Weather
     I18n.with_locale(:ru) { Date.today.day.to_words(gender: :neuter) }
   end
 end
-
-Weather.new.inform
